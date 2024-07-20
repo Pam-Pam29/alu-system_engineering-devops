@@ -26,6 +26,9 @@ printf %s "server {
     }
 
     error_page 404 /404.html;
+    location = /404.html {
+        internal;
+    }
 }" > /etc/nginx/sites-available/default
 
 service nginx restart
