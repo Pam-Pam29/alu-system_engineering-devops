@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Install Nginx if not already installed
+sudo apt-get update && sudo apt-get install -y nginx
+
+# Create a custom 404 HTML page
+sudo tee /usr/share/nginx/html/404.html > /dev/null <<EOF
+<html>
+  <head>
+    <title>404 Not Found</title>
+  </head>
+  <body>
+    <h1>Ceci n'est pas une page</h1>
+  </body>
+</html>
+EOF
+
+# Create a new Nginx configuration file
+sudo tee /etc/nginx/sites-available/default > /dev/null <<EOF
+server {
+    listen 80;
+    server_name _;
+
+    error_page 404 /404.html;
+    location /404.html {
+        internal;
+    }
+}
+EOF
+
+# Reload Nginx to apply the new configuration
+sudo service nginx reload
