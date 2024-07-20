@@ -1,19 +1,25 @@
 #!/usr/bin/env bash
-#configuring nginx server
-#+ Install Nginx if not already installed
-sudo apt-get update && sudo apt-get install -y nginx
+# Configures an Nginx server so that /redirect_me redirects to another page.
+# The redirection is configured as a "301 Moved Permanently"
 
-# Create a new Nginx configuration file
-sudo tee /etc/nginx/sites-available/default > /dev/null <<EOF
-server {
+apt-get update
+apt-get install -y nginx
+
+mkdir /etc/nginx/html
+touch /etc/nginx/html/index.html
+echo "Holberton School" > /etc/nginx/html/index.html
+printf %s "server {
     listen 80;
-    server_name _;
+    listen [::]:80 default_server;
+    root   /etc/nginx/html;
+    index  index.html index.htm;
 
-    location /redirect_me {
-        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    location / {
+	try_files \$uri \$uri/ =404;
     }
-}
-EOF
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=7VAI73roXaY&list=PPSV;
+    }
+}" > /etc/nginx/sites-available/default
 
-# Reload Nginx to apply the new configuration
-sudo service nginx reload
+service nginx restart
